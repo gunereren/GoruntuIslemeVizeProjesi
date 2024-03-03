@@ -14,11 +14,14 @@ windll.shcore.SetProcessDpiAwareness(1)
 
 
 class Odev1Arayuz(tk.Toplevel):
+    # Ödev 1 penceresini açılmasını ve kontrol edilmesini sağlayan class
     def __init__(self, ust_dugme_text, odev_icerik):
+        # Ödev 1 constructor metodu
         super().__init__()
         self.title(ust_dugme_text+": "+odev_icerik)
         self.geometry("800x600")
         self.odev_icerik = odev_icerik
+        # Ödev 1 penceresinin özellikleri
 
         self.gorselKatmani = tk.Label(self)
         self.gorselKatmani.pack()
@@ -44,13 +47,13 @@ class Odev1Arayuz(tk.Toplevel):
         self.th2_slider.pack()
 
         self.kapatBtn = tk.Button(self, text="KAPAT", command=self.destroy)
+        # KAPAT butonuna basıldığında "destroy" metodu yardımıyla mevcut pencereyi kapatmaktadır.
         self.kapatBtn.pack(pady=10, side=tk.BOTTOM)
 
         self.image = None
-        self.thresholded_image = None
-        self.histogram_window = None
 
     def hsvDonustur(self):
+        # HSV'ye çevirme işlemi burada yapılmaktadır
         if self.image is not None:
             arrayImg = np.array(self.image)
             hsvImg = cv2.cvtColor(arrayImg, cv2.COLOR_BGR2HSV)
@@ -60,6 +63,7 @@ class Odev1Arayuz(tk.Toplevel):
             self.gorselKatmani.image = hsvImg
 
     def cannyEdgeDtc(self):
+        # Kenar algılama metodu
         if self.image is not None:
             arrayImg = np.array(self.image)
             edges = cv2.Canny(arrayImg, self.th1_slider.get(), self.th2_slider.get())
@@ -82,6 +86,7 @@ class Odev1Arayuz(tk.Toplevel):
 
 
 class Odev2Arayuz(tk.Toplevel):
+    # Ödev 2 penceresini açılmasını ve kontrol edilmesini sağlayan class
     def __init__(self, ust_dugme_text, odev_icerik):
         super().__init__()
         self.title(ust_dugme_text+": "+odev_icerik)
@@ -95,6 +100,7 @@ class Odev2Arayuz(tk.Toplevel):
 
 
 class AnaSayfa:
+    # Uygulama ana ekranı oluşturmamızı ve kontrol etmemizi sağlayan class
     def __init__(self, root):
         # __init__ metodu class'ın constructor metodu olup bu sınıftan bir nesne oluşturulduğunda çalışır.
         self.root = root

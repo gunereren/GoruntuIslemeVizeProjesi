@@ -4,111 +4,74 @@ import tkinter as tk
 from tkinter import filedialog
 from PIL import Image, ImageTk
 from ctypes import windll
+from tkinter import messagebox
 
 
 # Bu kod Tkinter penceresinin görüntü kalitesini arttırmaya yarıyor. Yazılar daha net gözüküyor.
 windll.shcore.SetProcessDpiAwareness(1)
 
 
-class OdevTakipArayuzu:
+class Odev1Arayuz(tk.Toplevel):
+    def __init__(self, ust_dugme_text, odev_icerik):
+        super().__init__()
+        self.title(ust_dugme_text+": "+odev_icerik)
+        self.geometry("500x400")
+        self.odev_icerik = odev_icerik
+
+        self.metin = tk.Label(self, text="Threshold yapılabilir")
+        self.metin.pack(padx=10, pady=10)
+
+        self.kapatBtn = tk.Button(self, text="KAPAT", command=self.destroy)
+        self.kapatBtn.pack(pady=10, side=tk.BOTTOM)
+
+
+class Odev2Arayuz(tk.Toplevel):
+    def __init__(self, ust_dugme_text, odev_icerik):
+        super().__init__()
+        self.title(ust_dugme_text+": "+odev_icerik)
+        self.geometry("500x400")
+
+        self.metin = tk.Label(self, text="Bu ödev henüz verilmedi")
+        self.metin.pack(padx=10, pady=10)
+
+        self.kapatBtn = tk.Button(self, text="KAPAT", command=self.destroy)
+        self.kapatBtn.pack(pady=10, side=tk.BOTTOM)
+
+
+class AnaSayfa:
     def __init__(self, root):
         # __init__ metodu class'ın constructor metodu olup bu sınıftan bir nesne oluşturulduğunda çalışır.
         self.root = root
         self.root.title("Dijital Görüntü İşleme Ödev Arayüzü")
         self.root.geometry("500x400")
 
-        self.ana_ekran()
+        self.authorFont = tk.font.Font(family="Helvetica", size=12, weight="bold")
+        self.authorText = tk.Label(self.root, text="Dijital Görüntü İşleme\nEren GÜNER\n211229049", font=self.authorFont)
+        self.authorText.pack(padx=10, pady=10)
 
-    def ana_ekran(self):
         self.odevler = {
-            # Yeni ödevler geldikçe buraya eklenecek. Ödevler sözlük halinde tutuluyor ilk kısım menü, 2. kısım açıklama
-            "Ödev 1: Temel İşevselliği Oluşturma": "Threshold İşlemi",
-            "Ödev 2: NONE": "Yeni Ödev Henüz Yüklenmedi"
+            # Yeni ödevler geldikçe buraya eklenecek.
+            # Ödevler sözlük halinde tutuluyor ilk kısım menüde yazan, 2. kısım pencere başlığı
+            "Ödev 1": "Temel İşlevselliği Oluştur",
+            "Ödev 2": "null"
         }
 
         self.odevMenu = tk.Menu(self.root, tearoff=0)
         self.root.config(menu=self.odevMenu)
 
         for odev, icerik in self.odevler.items():
-            self.odevMenu.add_command(label=odev, command=lambda o=odev, i=icerik: self.odev1(o, i))
+            self.odevMenu.add_command(label=odev, command=lambda o=odev, i=icerik: self.odevAc(o, i))
 
-        self.authorFont = tk.font.Font(family="Helvetica", size=11, weight="bold")
-
-        self.mainText = tk.StringVar()
-        self.mainText.set("Dijital Görüntü İşleme\nEren GÜNER\n211229049")
-
-        self.mainTextEtiket = tk.Label(self.root, textvariable=self.mainText, font=self.authorFont)
-        self.mainTextEtiket.pack(padx=10, pady=10)
-
-        self.geri_don_button = tk.Button(self.root, text="Ana Sayfa", command=self.ana_ekrana_don)
-        self.geri_don_button.pack(pady=10)
-
-        # Geri dön butonunu başlangıçta gizle
-        self.geri_don_button.pack_forget()
-        self.geri_don_goster = False
-
-    def odev1(self, odev, icerik):
-        self.mainText.set(icerik)
-        self.root.title("Ödev 1: Temel İşlevselliği Oluştur")
-        # Ödev penceresi açıldığında geri dön butonunu göster
-        if not self.geri_don_goster:
-            self.geri_don_button.pack()
-            self.geri_don_goster = True
-
-    def odev2(self, odev, icerik):
-        self.mainText.set(icerik)
-        self.root.title("Ödev 2: ÖDEV VERİLMEDİ")
-        # Ödev penceresi açıldığında geri dön butonunu göster
-        if not self.geri_don_goster:
-            self.geri_don_button.pack()
-            self.geri_don_goster = True
-
-    def ana_ekrana_don(self):
-        # Geri dön butonunu gizle
-        self.geri_don_button.pack_forget()
-        self.geri_don_goster = False
-
-        # Ana ekrana dön
-        self.mainTextEtiket.pack_forget()
-        self.root.title("Dijital Görüntü İşleme Ödev Arayüzü")
-        self.ana_ekran()
-
-        # self.mainMenu = tk.Menu(self.root)
-        # self.root.config(menu=self.mainMenu)
-        #
-        # self.odevMenu = tk.Menu(self.mainMenu, tearoff=0)
-        # self.mainMenu.add_cascade(label="Ödevler", menu=self.odevMenu)
-        # self.odevMenu.add_command(label="Ödev 1: Temel İşlevselliği Oluştur", command=self.odev1)
-        # self.mainMenu.add_separator()
-        # self.mainMenu.add_command(label="ÇIKIŞ", command=root.destroy)
-        #
-        # self.authorFont = tk.font.Font(family="Helvetica", size=11)
-        # self.author = tk.Label(self.root, text="Eren GÜNER - 211229049 - Görüntü İşleme", font=self.authorFont)
-        # self.author.pack(side=tk.BOTTOM, padx=10, pady=10)
-
-    # def odev1(self):
-    #     odev1Frame = tk.Toplevel(self.root)
-    #     odev1Frame.title("Ödev 1: Temel İşlevselliği Oluşturma")
-    #     odev1Frame.geometry("700x500")
-    #
-    #     odev1Header = tk.Label(odev1Frame, text="Ödev 1: Temel İşlevselliği Oluşturma")
-    #     odev1Header.pack(side=tk.TOP)
-    #
-    #     odev1ImageLabel = tk.Label(odev1Frame)
-    #     odev1ImageLabel.pack()
-    #
-    #     image = None
-    #
-    #     gorselYukleBtn = tk.Button(odev1Frame, text="Görsel Yükle")
-    #     gorselYukleBtn.pack()
-
-    # def gorselYukle(self):
-    #     filePath = filedialog.askopenfilename(filetypes=[("Resim Dosyaları", "*.png;*.jpg;*.jpeg;*.gif")])
-    #     if filePath:
-    #
-    #         image = Image.open(filePath)
+    def odevAc(self, odev, icerik):
+        # Yeni ödevler buraya eklenecek
+        if odev == "Ödev 1":
+            Odev1Arayuz(odev, icerik)
+        elif odev == "Ödev 2":
+            Odev2Arayuz(odev, icerik)
+        else:
+            messagebox.showinfo("Uyarı", "Bu ödev henüz verilmedi :)")
 
 
 root = tk.Tk()
-OdevTakipArayuzu(root)
+AnaSayfa(root)
 root.mainloop()

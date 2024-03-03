@@ -1,54 +1,61 @@
 import tkinter as tk
 from tkinter import messagebox
 
+class Odev1Arayuzu(tk.Toplevel):
+    def __init__(self, ust_dugme_text, odev_icerik):
+        super().__init__()
+
+        self.title(ust_dugme_text)
+
+        self.odev_icerik = odev_icerik
+
+        self.label = tk.Label(self, text=self.odev_icerik)
+        self.label.pack(padx=10, pady=10)
+
+        self.geri_don_button = tk.Button(self, text="Geri Dön", command=self.destroy)
+        self.geri_don_button.pack(pady=10)
+
+class Odev2Arayuzu(tk.Toplevel):
+    def __init__(self, ust_dugme_text, odev_icerik):
+        super().__init__()
+
+        self.title(ust_dugme_text)
+
+        # Odev2'nin özel işlevselliği burada eklenebilir
+
+        self.label = tk.Label(self, text=odev_icerik)
+        self.label.pack(padx=10, pady=10)
+
+        self.geri_don_button = tk.Button(self, text="Geri Dön", command=self.destroy)
+        self.geri_don_button.pack(pady=10)
+
 class OdevTakipArayuzu:
     def __init__(self, root):
         self.root = root
         self.root.title("Ödev Takip")
 
-        self.ana_ekran()
-
-    def ana_ekran(self):
-        self.odev_icerikleri = {
+        self.odevler = {
             "Ödev 1": "Ödev 1 İçeriği",
+            "Ödev 2": "Ödev 2 İçeriği",
             # Buraya ek ödevleri ekleyebilirsiniz.
         }
 
         self.odev_menu = tk.Menu(self.root, tearoff=0)
         self.root.config(menu=self.odev_menu)
 
-        for odev, icerik in self.odev_icerikleri.items():
-            self.odev_menu.add_command(label=odev, command=lambda o=odev, i=icerik: self.odev_ac(o, i))
+        for odev in self.odevler:
+            self.odev_menu.add_command(label=odev, command=lambda o=odev: self.odev_ac(o))
 
-        self.odev_aciklama = tk.StringVar()
-        self.odev_aciklama.set("Dijital Görüntü İşleme - Eren GÜNER - 211229049")
+    def odev_ac(self, odev):
+        icerik = self.odevler.get(odev, "Ödev içeriği bulunamadı.")
 
-        self.odev_aciklama_etiket = tk.Label(self.root, textvariable=self.odev_aciklama)
-        self.odev_aciklama_etiket.pack(padx=10, pady=10)
-
-        self.geri_don_button = tk.Button(self.root, text="Geri Dön", command=self.ana_ekrana_don)
-        self.geri_don_button.pack(pady=10)
-
-        # Geri dön butonunu başlangıçta gizle
-        self.geri_don_button.pack_forget()
-        self.geri_don_goster = False
-
-    def odev_ac(self, odev, icerik):
-        self.odev_aciklama.set(icerik)
-
-        # Ödev penceresi açıldığında geri dön butonunu göster
-        if not self.geri_don_goster:
-            self.geri_don_button.pack()
-            self.geri_don_goster = True
-
-    def ana_ekrana_don(self):
-        # Geri dön butonunu gizle
-        self.geri_don_button.pack_forget()
-        self.geri_don_goster = False
-
-        # Ana ekrana dön
-        self.odev_aciklama_etiket.pack_forget()
-        self.ana_ekran()
+        if odev == "Ödev 1":
+            Odev1Arayuzu(odev, icerik)
+        elif odev == "Ödev 2":
+            Odev2Arayuzu(odev, icerik)
+        # Buraya ek ödevler için sınıfları ekleyebilirsiniz.
+        else:
+            messagebox.showinfo("Uyarı", "Bu ödev için özel sınıf bulunamadı.")
 
 # Ana uygulama penceresi
 root = tk.Tk()

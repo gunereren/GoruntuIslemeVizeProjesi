@@ -5,6 +5,8 @@ from tkinter import filedialog
 from PIL import Image, ImageTk
 from ctypes import windll
 from tkinter import messagebox
+import numpy as np
+import cv2
 
 
 # Bu kod Tkinter penceresinin görüntü kalitesini arttırmaya yarıyor. Yazılar daha net gözüküyor.
@@ -18,14 +20,17 @@ class Odev1Arayuz(tk.Toplevel):
         self.geometry("800x600")
         self.odev_icerik = odev_icerik
 
-        self.metin = tk.Label(self, text="Threshold yapılabilir")
+        self.metin = tk.Label(self, text="Yapılan İşlemler Hakkında açıklama yapılacak")
         self.metin.pack(padx=10, pady=10)
 
         self.gorselKatmani = tk.Label(self)
         self.gorselKatmani.pack()
 
         self.gorselYukleBtn = tk.Button(self, text="Görsel Yükle", command=self.gorselYukle)
-        self.gorselYukleBtn.pack(padx=10, pady=10)
+        self.gorselYukleBtn.pack(padx=10, pady=20)
+
+        self.cannyBtn = tk.Button(self, text="Canny Edge Detection", command=self.cannyEdgeDtc)
+        self.cannyBtn.pack(pady=5)
 
         self.kapatBtn = tk.Button(self, text="KAPAT", command=self.destroy)
         self.kapatBtn.pack(pady=10, side=tk.BOTTOM)
@@ -33,6 +38,15 @@ class Odev1Arayuz(tk.Toplevel):
         self.image = None
         self.thresholded_image = None
         self.histogram_window = None
+
+    def cannyEdgeDtc(self):
+        if self.image is not None:
+            arrayImg = np.array(self.image)
+            edges = cv2.Canny(arrayImg, 127, 255)
+            edges_image = Image.fromarray(edges)
+            img = ImageTk.PhotoImage(edges_image)
+            self.gorselKatmani.config(image=img)
+            self.gorselKatmani.image = img
 
     def gorselYukle(self):
         file_path = filedialog.askopenfilename(filetypes=[("Resim Dosyaları", "*.png;*.jpg;*.jpeg;*.gif")])

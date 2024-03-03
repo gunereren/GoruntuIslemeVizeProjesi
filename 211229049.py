@@ -10,6 +10,12 @@ from ctypes import windll
 windll.shcore.SetProcessDpiAwareness(1)
 
 
+class odevClass:
+    def __init__(self, odevWindow):
+        print("Constructor")
+
+
+
 class MasterClass:
     def __init__(self, master):
         # __init__ metodu class'ın constructor metodu olup bu sınıftan bir nesne oluşturulduğunda çalışır.
@@ -35,7 +41,7 @@ class MasterClass:
         odev1Frame.title("Ödev 1: Temel İşlevselliği Oluşturma")
         odev1Frame.geometry("700x500")
 
-        self.odev1Header = tk.Label(odev1Frame, text="Ödev 1: Temel İşlevselliği Oluşturma")
+        odev1Header = tk.Label(odev1Frame, text="Ödev 1: Temel İşlevselliği Oluşturma")
         odev1Header.pack(side=tk.TOP)
 
         odev1ImageLabel = tk.Label(odev1Frame)

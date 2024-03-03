@@ -20,9 +20,6 @@ class Odev1Arayuz(tk.Toplevel):
         self.geometry("800x600")
         self.odev_icerik = odev_icerik
 
-        self.metin = tk.Label(self, text="Yapılan İşlemler Hakkında açıklama yapılacak")
-        self.metin.pack(padx=10, pady=10)
-
         self.gorselKatmani = tk.Label(self)
         self.gorselKatmani.pack()
 
@@ -31,6 +28,17 @@ class Odev1Arayuz(tk.Toplevel):
 
         self.cannyBtn = tk.Button(self, text="Canny Edge Detection", command=self.cannyEdgeDtc)
         self.cannyBtn.pack(pady=5)
+
+        self.metin = tk.Label(self, text="2 tane threshold değeri var. Alttaki sürgülerden ayarlanabilir.")
+        self.metin.pack(padx=10, pady=10)
+
+        self.th1_slider = tk.Scale(self, from_=0, to=255, orient=tk.HORIZONTAL, length=200)
+        self.th1_slider.set(128)
+        self.th1_slider.pack()
+
+        self.th2_slider = tk.Scale(self, from_=0, to=255, orient=tk.HORIZONTAL, length=200)
+        self.th2_slider.set(255)
+        self.th2_slider.pack()
 
         self.kapatBtn = tk.Button(self, text="KAPAT", command=self.destroy)
         self.kapatBtn.pack(pady=10, side=tk.BOTTOM)
@@ -42,7 +50,7 @@ class Odev1Arayuz(tk.Toplevel):
     def cannyEdgeDtc(self):
         if self.image is not None:
             arrayImg = np.array(self.image)
-            edges = cv2.Canny(arrayImg, 127, 255)
+            edges = cv2.Canny(arrayImg, self.th1_slider.get(), self.th2_slider.get())
             edges_image = Image.fromarray(edges)
             img = ImageTk.PhotoImage(edges_image)
             self.gorselKatmani.config(image=img)

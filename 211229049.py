@@ -26,10 +26,13 @@ class Odev1Arayuz(tk.Toplevel):
         self.gorselYukleBtn = tk.Button(self, text="Görsel Yükle", command=self.gorselYukle)
         self.gorselYukleBtn.pack(padx=10, pady=20)
 
+        self.hsvBtn = tk.Button(self, text="HSV'ye Dönüştür", command=self.hsvDonustur)
+        self.hsvBtn.pack(pady=5)
+
         self.cannyBtn = tk.Button(self, text="Canny Edge Detection", command=self.cannyEdgeDtc)
         self.cannyBtn.pack(pady=5)
 
-        self.metin = tk.Label(self, text="2 tane threshold değeri var. Alttaki sürgülerden ayarlanabilir.")
+        self.metin = tk.Label(self, text="Canny Edge Detection için 2 tane threshold değeri var. Alttaki sürgülerden ayarlanabilir.")
         self.metin.pack(padx=10, pady=10)
 
         self.th1_slider = tk.Scale(self, from_=0, to=255, orient=tk.HORIZONTAL, length=200)
@@ -46,6 +49,15 @@ class Odev1Arayuz(tk.Toplevel):
         self.image = None
         self.thresholded_image = None
         self.histogram_window = None
+
+    def hsvDonustur(self):
+        if self.image is not None:
+            arrayImg = np.array(self.image)
+            hsvImg = cv2.cvtColor(arrayImg, cv2.COLOR_BGR2HSV)
+            hsvImg = Image.fromarray(hsvImg)
+            hsvImg = ImageTk.PhotoImage(hsvImg)
+            self.gorselKatmani.config(image=hsvImg)
+            self.gorselKatmani.image = hsvImg
 
     def cannyEdgeDtc(self):
         if self.image is not None:

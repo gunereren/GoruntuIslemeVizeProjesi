@@ -10,64 +10,93 @@ from ctypes import windll
 windll.shcore.SetProcessDpiAwareness(1)
 
 
-class odevClass:
-    def __init__(self, odevWindow):
-        print("Constructor")
-
-
-
-class MasterClass:
-    def __init__(self, master):
+class OdevTakipArayuzu:
+    def __init__(self, root):
         # __init__ metodu class'ın constructor metodu olup bu sınıftan bir nesne oluşturulduğunda çalışır.
-        self.master = master
-        self.master.title("Dijital Görüntü İşleme Ödev Arayüzü")
-        self.master.geometry("700x500")
+        self.root = root
+        self.root.title("Dijital Görüntü İşleme Ödev Arayüzü")
+        self.root.geometry("400x300")
 
-        self.mainMenu = tk.Menu(self.master)
-        self.master.config(menu=self.mainMenu)
+        self.ana_ekran()
 
-        self.odevMenu = tk.Menu(self.mainMenu, tearoff=0)
-        self.mainMenu.add_cascade(label="Ödevler", menu=self.odevMenu)
-        self.odevMenu.add_command(label="Ödev 1: Temel İşlevselliği Oluştur", command=self.odev1)
-        self.mainMenu.add_separator()
-        self.mainMenu.add_command(label="ÇIKIŞ", command=master.destroy)
+    def ana_ekran(self):
+        self.odevler = {
+            # Yeni ödevler geldikçe buraya eklenecek. Ödevler sözlük halinde tutuluyor ilk kısım menü, 2. kısım açıklama
+            "Ödev 1: Temel İşevselliği Oluşturma": "Threshold İşlemi"
+        }
 
-        self.authorFont = tk.font.Font(family="Helvetica", size=11)
-        self.author = tk.Label(self.master, text="Eren GÜNER - 211229049 - Görüntü İşleme", font=self.authorFont)
-        self.author.pack(side=tk.BOTTOM, padx=10, pady=10)
+        self.odevMenu = tk.Menu(self.root, tearoff=0)
+        self.root.config(menu=self.odevMenu)
 
-    def odev1(self):
-        odev1Frame = tk.Toplevel(self.master)
-        odev1Frame.title("Ödev 1: Temel İşlevselliği Oluşturma")
-        odev1Frame.geometry("700x500")
+        for odev, icerik in self.odevler.items():
+            self.odevMenu.add_command(label=odev, command=lambda o=odev, i=icerik: self.odevAc(o, i))
 
-        odev1Header = tk.Label(odev1Frame, text="Ödev 1: Temel İşlevselliği Oluşturma")
-        odev1Header.pack(side=tk.TOP)
+        self.mainText = tk.StringVar()
+        self.mainText.set("Dijital Görüntü İşleme - Eren GÜNER - 211229049")
 
-        odev1ImageLabel = tk.Label(odev1Frame)
-        odev1ImageLabel.pack()
+        self.mainTextEtiket = tk.Label(self.root, textvariable=self.mainText)
+        self.mainTextEtiket.pack(padx=10, pady=10)
 
-        image = None
+        self.geri_don_button = tk.Button(self.root, text="Geri Dön", command=self.ana_ekrana_don)
+        self.geri_don_button.pack(pady=10)
 
-        gorselYukleBtn = tk.Button(odev1Frame, text="Görsel Yükle")
-        gorselYukleBtn.pack()
+        # Geri dön butonunu başlangıçta gizle
+        self.geri_don_button.pack_forget()
+        self.geri_don_goster = False
 
-    def gorselYukle(self):
-        filePath = filedialog.askopenfilename(filetypes=[("Resim Dosyaları", "*.png;*.jpg;*.jpeg;*.gif")])
-        if filePath:
+    def odevAc(self, odev, icerik):
+        self.mainText.set(icerik)
 
-            image = Image.open(filePath)
+        # Ödev penceresi açıldığında geri dön butonunu göster
+        if not self.geri_don_goster:
+            self.geri_don_button.pack()
+            self.geri_don_goster = True
+
+    def ana_ekrana_don(self):
+        # Geri dön butonunu gizle
+        self.geri_don_button.pack_forget()
+        self.geri_don_goster = False
+
+        # Ana ekrana dön
+        self.mainTextEtiket.pack_forget()
+        self.ana_ekran()
+
+        # self.mainMenu = tk.Menu(self.root)
+        # self.root.config(menu=self.mainMenu)
+        #
+        # self.odevMenu = tk.Menu(self.mainMenu, tearoff=0)
+        # self.mainMenu.add_cascade(label="Ödevler", menu=self.odevMenu)
+        # self.odevMenu.add_command(label="Ödev 1: Temel İşlevselliği Oluştur", command=self.odev1)
+        # self.mainMenu.add_separator()
+        # self.mainMenu.add_command(label="ÇIKIŞ", command=root.destroy)
+        #
+        # self.authorFont = tk.font.Font(family="Helvetica", size=11)
+        # self.author = tk.Label(self.root, text="Eren GÜNER - 211229049 - Görüntü İşleme", font=self.authorFont)
+        # self.author.pack(side=tk.BOTTOM, padx=10, pady=10)
+
+    # def odev1(self):
+    #     odev1Frame = tk.Toplevel(self.root)
+    #     odev1Frame.title("Ödev 1: Temel İşlevselliği Oluşturma")
+    #     odev1Frame.geometry("700x500")
+    #
+    #     odev1Header = tk.Label(odev1Frame, text="Ödev 1: Temel İşlevselliği Oluşturma")
+    #     odev1Header.pack(side=tk.TOP)
+    #
+    #     odev1ImageLabel = tk.Label(odev1Frame)
+    #     odev1ImageLabel.pack()
+    #
+    #     image = None
+    #
+    #     gorselYukleBtn = tk.Button(odev1Frame, text="Görsel Yükle")
+    #     gorselYukleBtn.pack()
+
+    # def gorselYukle(self):
+    #     filePath = filedialog.askopenfilename(filetypes=[("Resim Dosyaları", "*.png;*.jpg;*.jpeg;*.gif")])
+    #     if filePath:
+    #
+    #         image = Image.open(filePath)
 
 
-
-
-
-
-def main():
-    root = tk.Tk()
-    MasterClass(root)
-    root.mainloop()
-
-
-if __name__ == "__main__":
-    main()
+root = tk.Tk()
+OdevTakipArayuzu(root)
+root.mainloop()

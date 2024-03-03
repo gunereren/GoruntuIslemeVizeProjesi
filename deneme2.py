@@ -21,7 +21,7 @@ class OdevTakipArayuzu:
             self.odev_menu.add_command(label=odev, command=lambda o=odev, i=icerik: self.odev_ac(o, i))
 
         self.odev_aciklama = tk.StringVar()
-        self.odev_aciklama.set("Burada ödev açıklaması gösterilecek.")
+        self.odev_aciklama.set("Dijital Görüntü İşleme - Eren GÜNER - 211229049")
 
         self.odev_aciklama_etiket = tk.Label(self.root, textvariable=self.odev_aciklama)
         self.odev_aciklama_etiket.pack(padx=10, pady=10)

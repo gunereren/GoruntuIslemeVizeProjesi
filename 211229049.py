@@ -15,21 +15,22 @@ class OdevTakipArayuzu:
         # __init__ metodu class'ın constructor metodu olup bu sınıftan bir nesne oluşturulduğunda çalışır.
         self.root = root
         self.root.title("Dijital Görüntü İşleme Ödev Arayüzü")
-        self.root.geometry("400x300")
+        self.root.geometry("500x400")
 
         self.ana_ekran()
 
     def ana_ekran(self):
         self.odevler = {
             # Yeni ödevler geldikçe buraya eklenecek. Ödevler sözlük halinde tutuluyor ilk kısım menü, 2. kısım açıklama
-            "Ödev 1: Temel İşevselliği Oluşturma": "Threshold İşlemi"
+            "Ödev 1: Temel İşevselliği Oluşturma": "Threshold İşlemi",
+            "Ödev 2: NONE": "Yeni Ödev Henüz Yüklenmedi"
         }
 
         self.odevMenu = tk.Menu(self.root, tearoff=0)
         self.root.config(menu=self.odevMenu)
 
         for odev, icerik in self.odevler.items():
-            self.odevMenu.add_command(label=odev, command=lambda o=odev, i=icerik: self.odevAc(o, i))
+            self.odevMenu.add_command(label=odev, command=lambda o=odev, i=icerik: self.odev1(o, i))
 
         self.authorFont = tk.font.Font(family="Helvetica", size=11, weight="bold")
 
@@ -39,16 +40,24 @@ class OdevTakipArayuzu:
         self.mainTextEtiket = tk.Label(self.root, textvariable=self.mainText, font=self.authorFont)
         self.mainTextEtiket.pack(padx=10, pady=10)
 
-        self.geri_don_button = tk.Button(self.root, text="Geri Dön", command=self.ana_ekrana_don)
+        self.geri_don_button = tk.Button(self.root, text="Ana Sayfa", command=self.ana_ekrana_don)
         self.geri_don_button.pack(pady=10)
 
         # Geri dön butonunu başlangıçta gizle
         self.geri_don_button.pack_forget()
         self.geri_don_goster = False
 
-    def odevAc(self, odev, icerik):
+    def odev1(self, odev, icerik):
         self.mainText.set(icerik)
+        self.root.title("Ödev 1: Temel İşlevselliği Oluştur")
+        # Ödev penceresi açıldığında geri dön butonunu göster
+        if not self.geri_don_goster:
+            self.geri_don_button.pack()
+            self.geri_don_goster = True
 
+    def odev2(self, odev, icerik):
+        self.mainText.set(icerik)
+        self.root.title("Ödev 2: ÖDEV VERİLMEDİ")
         # Ödev penceresi açıldığında geri dön butonunu göster
         if not self.geri_don_goster:
             self.geri_don_button.pack()
@@ -61,6 +70,7 @@ class OdevTakipArayuzu:
 
         # Ana ekrana dön
         self.mainTextEtiket.pack_forget()
+        self.root.title("Dijital Görüntü İşleme Ödev Arayüzü")
         self.ana_ekran()
 
         # self.mainMenu = tk.Menu(self.root)

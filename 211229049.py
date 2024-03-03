@@ -15,14 +15,36 @@ class Odev1Arayuz(tk.Toplevel):
     def __init__(self, ust_dugme_text, odev_icerik):
         super().__init__()
         self.title(ust_dugme_text+": "+odev_icerik)
-        self.geometry("500x400")
+        self.geometry("800x600")
         self.odev_icerik = odev_icerik
 
         self.metin = tk.Label(self, text="Threshold yapılabilir")
         self.metin.pack(padx=10, pady=10)
 
+        self.gorselKatmani = tk.Label(self)
+        self.gorselKatmani.pack()
+
+        self.gorselYukleBtn = tk.Button(self, text="Görsel Yükle", command=self.gorselYukle)
+        self.gorselYukleBtn.pack(padx=10, pady=10)
+
         self.kapatBtn = tk.Button(self, text="KAPAT", command=self.destroy)
         self.kapatBtn.pack(pady=10, side=tk.BOTTOM)
+
+        self.image=None
+        self.thresholded_image = None
+        self.histogram_window = None
+
+    def gorselYukle(self):
+        file_path = filedialog.askopenfilename(filetypes=[("Resim Dosyaları", "*.png;*.jpg;*.jpeg;*.gif")])
+        if file_path:
+            self.image = Image.open(file_path)
+            self.display_image()
+
+    def display_image(self):
+        if self.image is not None:
+            img = ImageTk.PhotoImage(self.image)
+            self.gorselKatmani.config(image=img)
+            self.gorselKatmani.image = img
 
 
 class Odev2Arayuz(tk.Toplevel):

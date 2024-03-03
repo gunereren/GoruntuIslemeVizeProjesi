@@ -30,7 +30,7 @@ class Odev1Arayuz(tk.Toplevel):
         self.kapatBtn = tk.Button(self, text="KAPAT", command=self.destroy)
         self.kapatBtn.pack(pady=10, side=tk.BOTTOM)
 
-        self.image=None
+        self.image = None
         self.thresholded_image = None
         self.histogram_window = None
 

@@ -31,10 +31,12 @@ class OdevTakipArayuzu:
         for odev, icerik in self.odevler.items():
             self.odevMenu.add_command(label=odev, command=lambda o=odev, i=icerik: self.odevAc(o, i))
 
-        self.mainText = tk.StringVar()
-        self.mainText.set("Dijital Görüntü İşleme - Eren GÜNER - 211229049")
+        self.authorFont = tk.font.Font(family="Helvetica", size=11, weight="bold")
 
-        self.mainTextEtiket = tk.Label(self.root, textvariable=self.mainText)
+        self.mainText = tk.StringVar()
+        self.mainText.set("Dijital Görüntü İşleme\nEren GÜNER\n211229049")
+
+        self.mainTextEtiket = tk.Label(self.root, textvariable=self.mainText, font=self.authorFont)
         self.mainTextEtiket.pack(padx=10, pady=10)
 
         self.geri_don_button = tk.Button(self.root, text="Geri Dön", command=self.ana_ekrana_don)

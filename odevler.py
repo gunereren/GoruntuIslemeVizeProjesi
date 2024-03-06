@@ -102,6 +102,26 @@ class Odev2Arayuz(tk.Toplevel):
         self.gorselYukleBtn = tk.Button(self, text="Görsel Yükle", command=self.gorselYukle)
         self.gorselYukleBtn.pack(padx=10, pady=20)
 
+        self.gbbBtn = tk.Button(self, text="Görüntü Boyutu Büyütme")
+        self.gbbBtn.pack(pady=5)
+
+        self.gbkBtn = tk.Button(self, text="Görüntü Boyutu Küçültme")
+        self.gbkBtn.pack(pady=5)
+
+        self.dondurmeTxt = tk.Label(self, text="Döndürme Açısı")
+        self.dondurmeTxt.pack(pady=(30, 0))
+        self.dondurme_slider = tk.Scale(self, from_=0, to=360, orient=tk.HORIZONTAL, length=200)
+        self.dondurme_slider.set(0)
+        self.dondurme_slider.pack()
+        self.dondurmeBtn = tk.Button(self, text="Açıya Göre Görüntü Döndürme")
+        self.dondurmeBtn.pack(pady=(0, 5))
+
+        self.zoominBtn = tk.Button(self, text="Zoom-In")
+        self.zoominBtn.pack()
+
+        self.zoomOutBtn = tk.Button(self, text="Zoom-Out")
+        self.zoomOutBtn.pack()
+
         self.kapatBtn = tk.Button(self, text="KAPAT", command=self.destroy)
         self.kapatBtn.pack(pady=10, side=tk.BOTTOM)
 

@@ -90,13 +90,32 @@ class Odev2Arayuz(tk.Toplevel):
     def __init__(self, ust_dugme_text, odev_icerik):
         super().__init__()
         self.title(ust_dugme_text+": "+odev_icerik)
-        self.geometry("500x400")
+        self.geometry("700x700")
 
-        self.metin = tk.Label(self, text="Bu ödev henüz verilmedi")
+        self.metin = tk.Label(self, text="Bu ödevde yüklenen fotoğrafa temel görüntü operasyonları ve interpolasyon"
+                                         "işlemleri uygulanacaktır.")
         self.metin.pack(padx=10, pady=10)
+
+        self.gorselKatmani = tk.Label(self)
+        self.gorselKatmani.pack()
+
+        self.gorselYukleBtn = tk.Button(self, text="Görsel Yükle", command=self.gorselYukle)
+        self.gorselYukleBtn.pack(padx=10, pady=20)
 
         self.kapatBtn = tk.Button(self, text="KAPAT", command=self.destroy)
         self.kapatBtn.pack(pady=10, side=tk.BOTTOM)
+
+    def gorselYukle(self):
+        file_path = filedialog.askopenfilename(filetypes=[("Resim Dosyaları", "*.png;*.jpg;*.jpeg;*.gif")])
+        if file_path:
+            self.image = Image.open(file_path)
+            self.display_image()
+
+    def display_image(self):
+        if self.image is not None:
+            img = ImageTk.PhotoImage(self.image)
+            self.gorselKatmani.config(image=img)
+            self.gorselKatmani.image = img
 
 
 class AnaSayfa:
@@ -113,9 +132,9 @@ class AnaSayfa:
 
         self.odevler = {
             # Yeni ödevler geldikçe buraya eklenecek.
-            # Ödevler sözlük halinde tutuluyor ilk kısım menüde yazan, 2. kısım pencere başlığı
+            # Ödevler sözlük halinde tutuluyor ilk kısım menüde yazan, 2. kısım pencere ismi
             "Ödev 1": "Temel İşlevselliği Oluştur",
-            "Ödev 2": "null"
+            "Ödev 2": "Temel Görüntü Operasyonları ve İnterpolasyon"
         }
 
         self.odevMenu = tk.Menu(self.root, tearoff=0)

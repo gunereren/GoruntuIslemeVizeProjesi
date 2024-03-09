@@ -1,3 +1,5 @@
+import math
+
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import tkinter as tk
@@ -110,10 +112,10 @@ class Odev2Arayuz(tk.Toplevel):
 
         self.dondurmeTxt = tk.Label(self, text="Döndürme Açısı")
         self.dondurmeTxt.pack(pady=(30, 0))
-        self.dondurme_slider = tk.Scale(self, from_=1, to=359, orient=tk.HORIZONTAL, length=200)
+        self.dondurme_slider = tk.Scale(self, from_=0, to=359, orient=tk.HORIZONTAL, length=200)
         self.dondurme_slider.set(0)
         self.dondurme_slider.pack()
-        self.dondurmeBtn = tk.Button(self, text="Açıya Göre Görüntü Döndürme")
+        self.dondurmeBtn = tk.Button(self, text="Açıya Göre Görüntü Döndürme", command=self.goruntuDondur)
         self.dondurmeBtn.pack(pady=(0, 5))
 
         self.zoominBtn = tk.Button(self, text="Zoom-In")
@@ -215,6 +217,49 @@ class Odev2Arayuz(tk.Toplevel):
 
             arrayImg = newImgArray
             self.image = Image.fromarray(arrayImg)
+
+            # Yeni görüntü için PhotoImage nesnesi oluşturuldu
+            img_tk = ImageTk.PhotoImage(self.image)
+
+            self.gorselKatmani.config(image=img_tk)
+            self.gorselKatmani.image = img_tk
+
+    def goruntuDondur(self):
+        if self.image is not None:
+            arraySrc = np.array(self.image)
+            height, width = arraySrc.shape[:2]
+
+            # ilk olarak açıyı radyan cinsine çevirmemiz gerekiyor.
+            aci = self.dondurme_slider.get()
+            radyan = math.radians(aci)
+
+            # görüntü döndürülünce oluşan yeni yükseklik ve genişlik değerleri
+            height_rot_img = round(abs(height * math.cos(radyan))) + \
+                             round(abs(width * math.sin(radyan)))
+            width_rot_img = round(abs(width * math.cos(radyan))) + \
+                            round(abs(height * math.sin(radyan)))
+
+            rotatedImg = np.uint8(np.zeros((height_rot_img, width_rot_img, arraySrc.shape[2])))
+
+            # orjinal resmin merkezini bulma
+            cx, cy = (arraySrc.shape[1] // 2, arraySrc.shape[0] // 2)
+
+            # döndürülmüş resmin merkezini bulma
+            midx, midy = (width_rot_img // 2, height_rot_img // 2)
+
+            for i in range(rotatedImg.shape[0]):
+                for j in range(rotatedImg.shape[1]):
+                    x = (i - midx) * math.cos(radyan) + (j - midy) * math.sin(radyan)
+                    y = -(i - midx) * math.sin(radyan) + (j - midy) * math.cos(radyan)
+
+                    x = round(x) + cy
+                    y = round(y) + cx
+
+                    if (x >= 0 and y >= 0 and x < arraySrc.shape[0] and y < arraySrc.shape[1]):
+                        rotatedImg[i, j, :] = arraySrc[x, y, :]
+
+            sonucImg = rotatedImg
+            self.image = Image.fromarray(sonucImg)
 
             # Yeni görüntü için PhotoImage nesnesi oluşturuldu
             img_tk = ImageTk.PhotoImage(self.image)

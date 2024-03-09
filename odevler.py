@@ -105,7 +105,7 @@ class Odev2Arayuz(tk.Toplevel):
         self.gbbBtn = tk.Button(self, text="Görüntü Boyutu Büyütme (x1.1)", command=self.boyutBuyutme)
         self.gbbBtn.pack(pady=5)
 
-        self.gbkBtn = tk.Button(self, text="Görüntü Boyutu Küçültme")
+        self.gbkBtn = tk.Button(self, text="Görüntü Boyutu Küçültme (x0.9)", command=self.boyutKucultme)
         self.gbkBtn.pack(pady=5)
 
         self.dondurmeTxt = tk.Label(self, text="Döndürme Açısı")
@@ -149,8 +149,8 @@ class Odev2Arayuz(tk.Toplevel):
             src_height, src_width = arraySrc.shape[:2]
 
             # En-Boy 1.1 oranında artırıldı
-            new_width = int(src_width + (src_width * 1.1))
-            new_height = int(src_height + (src_height * 1.1))
+            new_width = int(src_width * 1.1)
+            new_height = int(src_height * 1.1)
 
             x_ratio = float(src_width - 1) / (new_width - 1)
             y_ratio = float(src_height - 1) / (new_height - 1)
@@ -181,6 +181,39 @@ class Odev2Arayuz(tk.Toplevel):
 
             # Oluşan son matrisi bir değişkene atıp arayüzde görüntüleyebilmek için tekrar PIL türüne çeviriyoruz
             arrayImg = new_img
+            self.image = Image.fromarray(arrayImg)
+
+            # Yeni görüntü için PhotoImage nesnesi oluşturuldu
+            img_tk = ImageTk.PhotoImage(self.image)
+
+            self.gorselKatmani.config(image=img_tk)
+            self.gorselKatmani.image = img_tk
+    
+    def boyutKucultme(self):
+        # En Yakın Komşu İnterpolasyonu
+        if self.image is not None:
+            arraySrc = np.array(self.image)
+            src_height, src_width = arraySrc.shape[:2]
+
+            new_width = int(src_width * 0.9)
+            new_height = int(src_height * 0.9)
+
+            width_ratio = src_width / new_width
+            height_ratio = src_height / new_height
+
+            newImgArray = np.zeros((new_height, new_width, 3), dtype=np.uint8)
+
+            # En yakın komşu interpolasyonu
+            for y in range(new_height):
+                for x in range(new_width):
+                    # Orjinal piksel koordinatlarını hesapla
+                    original_x = int(x * width_ratio)
+                    original_y = int(y * height_ratio)
+
+                    # Orjinal piksel değerini al ve yeni görüntüye ekle
+                    newImgArray[y, x, :] = arraySrc[original_y, original_x, :]
+
+            arrayImg = newImgArray
             self.image = Image.fromarray(arrayImg)
 
             # Yeni görüntü için PhotoImage nesnesi oluşturuldu

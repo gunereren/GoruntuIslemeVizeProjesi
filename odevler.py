@@ -102,7 +102,7 @@ class Odev2Arayuz(tk.Toplevel):
         self.gorselYukleBtn = tk.Button(self, text="Görsel Yükle", command=self.gorselYukle)
         self.gorselYukleBtn.pack(padx=10, pady=20)
 
-        self.gbbBtn = tk.Button(self, text="Görüntü Boyutu Büyütme")
+        self.gbbBtn = tk.Button(self, text="Görüntü Boyutu Büyütme", command=self.bilinear_interpolation)
         self.gbbBtn.pack(pady=5)
 
         self.gbkBtn = tk.Button(self, text="Görüntü Boyutu Küçültme")
@@ -125,6 +125,8 @@ class Odev2Arayuz(tk.Toplevel):
         self.kapatBtn = tk.Button(self, text="KAPAT", command=self.destroy)
         self.kapatBtn.pack(pady=10, side=tk.BOTTOM)
 
+        self.image = None
+
     def gorselYukle(self):
         file_path = filedialog.askopenfilename(filetypes=[("Resim Dosyaları", "*.png;*.jpg;*.jpeg;*.gif")])
         if file_path:
@@ -136,6 +138,55 @@ class Odev2Arayuz(tk.Toplevel):
             img = ImageTk.PhotoImage(self.image)
             self.gorselKatmani.config(image=img)
             self.gorselKatmani.image = img
+
+    def bilinear_interpolation(self):
+        if self.image is not None:
+            # src_img = ImageTk.PhotoImage(self.image)
+            arraySrc = np.array(self.image)
+
+            # Kaynak görüntünün boyutları
+            src_height, src_width = arraySrc.shape[:2]
+            # height, width, c1 = arraySrc.shape
+            print(src_height, ", ", src_width)
+
+            new_width = 1000
+            new_height = 1000
+
+            x_ratio = float(src_width - 1) / (new_width - 1)
+            y_ratio = float(src_height - 1) / (new_height - 1)
+
+            # İstenen boyutta sıfırlardan oluşan yeni bir NumPy array oluşturduk
+            new_img = np.zeros((new_height, new_width, arraySrc.shape[2]), dtype=np.uint8)
+
+            for i in range(new_height):
+                for j in range(new_width):
+                    x = int(x_ratio * j)
+                    y = int(y_ratio * i)
+
+                    if x >= src_width - 1:
+                        x = src_width - 2
+                    if y >= src_height - 1:
+                        y = src_height - 2
+
+                    x_diff = (x_ratio * j) - x
+                    y_diff = (y_ratio * i) - y
+
+                    # Bilinear interpolasyon formülü
+                    pixel_value = (1 - x_diff) * (1 - y_diff) * arraySrc[y, x] + \
+                                  x_diff * (1 - y_diff) * arraySrc[y, x + 1] + \
+                                  (1 - x_diff) * y_diff * arraySrc[y + 1, x] + \
+                                  x_diff * y_diff * arraySrc[y + 1, x + 1]
+
+                    new_img[i, j] = pixel_value.astype(np.uint8)
+
+            arrayImg = new_img
+            sonGorsel = Image.fromarray(arrayImg)
+
+            # Yeni görüntü için PhotoImage nesnesi oluştur
+            img_tk = ImageTk.PhotoImage(sonGorsel)
+
+            self.gorselKatmani.config(image=img_tk)
+            self.gorselKatmani.image = img_tk
 
 
 class AnaSayfa:

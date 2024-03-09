@@ -8,7 +8,6 @@ from tkinter import messagebox
 import numpy as np
 import cv2
 
-
 # Bu kod Tkinter penceresinin görüntü kalitesini arttırmaya yarıyor. Yazılar daha net gözüküyor.
 windll.shcore.SetProcessDpiAwareness(1)
 
@@ -18,7 +17,7 @@ class Odev1Arayuz(tk.Toplevel):
     def __init__(self, ust_dugme_text, odev_icerik):
         # Ödev 1 constructor metodu
         super().__init__()
-        self.title(ust_dugme_text+": "+odev_icerik)
+        self.title(ust_dugme_text + ": " + odev_icerik)
         self.geometry("800x600")
         self.odev_icerik = odev_icerik
         # Ödev 1 penceresinin özellikleri
@@ -35,7 +34,8 @@ class Odev1Arayuz(tk.Toplevel):
         self.cannyBtn = tk.Button(self, text="Canny Edge Detection", command=self.cannyEdgeDtc)
         self.cannyBtn.pack(pady=5)
 
-        self.metin = tk.Label(self, text="Canny Edge Detection için 2 tane threshold değeri var. Alttaki sürgülerden ayarlanabilir.")
+        self.metin = tk.Label(self,
+                              text="Canny Edge Detection için 2 tane threshold değeri var. Alttaki sürgülerden ayarlanabilir.")
         self.metin.pack(padx=10, pady=10)
 
         self.th1_slider = tk.Scale(self, from_=0, to=255, orient=tk.HORIZONTAL, length=200)
@@ -89,7 +89,7 @@ class Odev2Arayuz(tk.Toplevel):
     # Ödev 2 penceresini açılmasını ve kontrol edilmesini sağlayan class
     def __init__(self, ust_dugme_text, odev_icerik):
         super().__init__()
-        self.title(ust_dugme_text+": "+odev_icerik)
+        self.title(ust_dugme_text + ": " + odev_icerik)
         self.geometry("700x700")
 
         self.metin = tk.Label(self, text="Bu ödevde yüklenen fotoğrafa temel görüntü operasyonları ve interpolasyon"
@@ -102,7 +102,7 @@ class Odev2Arayuz(tk.Toplevel):
         self.gorselYukleBtn = tk.Button(self, text="Görsel Yükle", command=self.gorselYukle)
         self.gorselYukleBtn.pack(padx=10, pady=20)
 
-        self.gbbBtn = tk.Button(self, text="Görüntü Boyutu Büyütme (+100px)", command=self.bilinear_interpolation)
+        self.gbbBtn = tk.Button(self, text="Görüntü Boyutu Büyütme (x1.1)", command=self.bilinear_interpolation)
         self.gbbBtn.pack(pady=5)
 
         self.gbkBtn = tk.Button(self, text="Görüntü Boyutu Küçültme")
@@ -146,11 +146,10 @@ class Odev2Arayuz(tk.Toplevel):
 
             # Kaynak görüntünün boyutları
             src_height, src_width = arraySrc.shape[:2]
-            print(len(arraySrc.shape))
 
             # En-Boy 200'er piksel arttırıldı
-            new_width = src_width + 100
-            new_height = src_height + 100
+            new_width = int(src_width + (src_width * 1.1))
+            new_height = int(src_height + (src_height * 1.1))
 
             x_ratio = float(src_width - 1) / (new_width - 1)
             y_ratio = float(src_height - 1) / (new_height - 1)
@@ -199,7 +198,8 @@ class AnaSayfa:
         self.root.geometry("500x400")
 
         self.authorFont = tk.font.Font(family="Helvetica", size=12, weight="bold")
-        self.authorText = tk.Label(self.root, text="Dijital Görüntü İşleme\nEren GÜNER\n211229049", font=self.authorFont)
+        self.authorText = tk.Label(self.root, text="Dijital Görüntü İşleme\nEren GÜNER\n211229049",
+                                   font=self.authorFont)
         self.authorText.pack(padx=10, pady=10)
 
         self.odevler = {

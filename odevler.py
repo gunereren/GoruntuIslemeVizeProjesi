@@ -102,7 +102,7 @@ class Odev2Arayuz(tk.Toplevel):
         self.gorselYukleBtn = tk.Button(self, text="Görsel Yükle", command=self.gorselYukle)
         self.gorselYukleBtn.pack(padx=10, pady=20)
 
-        self.gbbBtn = tk.Button(self, text="Görüntü Boyutu Büyütme", command=self.bilinear_interpolation)
+        self.gbbBtn = tk.Button(self, text="Görüntü Boyutu Büyütme (+100px)", command=self.bilinear_interpolation)
         self.gbbBtn.pack(pady=5)
 
         self.gbkBtn = tk.Button(self, text="Görüntü Boyutu Küçültme")
@@ -141,16 +141,17 @@ class Odev2Arayuz(tk.Toplevel):
 
     def bilinear_interpolation(self):
         if self.image is not None:
-            # src_img = ImageTk.PhotoImage(self.image)
+            # Matris işlemlerinin kolayca yapılabilmesi için görsel PIL türünden NumPy Array türüne çevrildi
             arraySrc = np.array(self.image)
 
             # Kaynak görüntünün boyutları
             src_height, src_width = arraySrc.shape[:2]
-            # height, width, c1 = arraySrc.shape
-            print(src_height, ", ", src_width)
 
-            new_width = 1000
-            new_height = 1000
+            # En-Boy 200'er piksel arttırıldı
+            new_width = src_width + 100
+            new_height = src_height + 100
+
+
 
             x_ratio = float(src_width - 1) / (new_width - 1)
             y_ratio = float(src_height - 1) / (new_height - 1)
@@ -179,11 +180,12 @@ class Odev2Arayuz(tk.Toplevel):
 
                     new_img[i, j] = pixel_value.astype(np.uint8)
 
+            # Oluşan son matrisi bir değişkene atıp arayüzde görüntüleyebilmek için tekrar PIL türüne çeviriyoruz
             arrayImg = new_img
-            sonGorsel = Image.fromarray(arrayImg)
+            self.image = Image.fromarray(arrayImg)
 
-            # Yeni görüntü için PhotoImage nesnesi oluştur
-            img_tk = ImageTk.PhotoImage(sonGorsel)
+            # Yeni görüntü için PhotoImage nesnesi oluşturuldu
+            img_tk = ImageTk.PhotoImage(self.image)
 
             self.gorselKatmani.config(image=img_tk)
             self.gorselKatmani.image = img_tk

@@ -128,7 +128,7 @@ class Odev2Arayuz(tk.Toplevel):
         self.image = None
 
     def gorselYukle(self):
-        file_path = filedialog.askopenfilename(filetypes=[("Resim Dosyaları", "*.png;*.jpg;*.jpeg;*.gif")])
+        file_path = filedialog.askopenfilename(filetypes=[("Resim Dosyaları (JPG/JPEG)", "*.jpg;*.jpeg;")])
         if file_path:
             self.image = Image.open(file_path)
             self.display_image()
@@ -146,12 +146,11 @@ class Odev2Arayuz(tk.Toplevel):
 
             # Kaynak görüntünün boyutları
             src_height, src_width = arraySrc.shape[:2]
+            print(len(arraySrc.shape))
 
             # En-Boy 200'er piksel arttırıldı
             new_width = src_width + 100
             new_height = src_height + 100
-
-
 
             x_ratio = float(src_width - 1) / (new_width - 1)
             y_ratio = float(src_height - 1) / (new_height - 1)

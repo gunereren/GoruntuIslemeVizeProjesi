@@ -35,7 +35,7 @@ class Odev1Arayuz(tk.Toplevel):
         self.cannyBtn.pack(pady=5)
 
         self.metin = tk.Label(self,
-                              text="Canny Edge Detection için 2 tane threshold değeri var. Alttaki sürgülerden ayarlanabilir.")
+                              text="Canny için 2 tane threshold değeri var. Alttaki sürgülerden ayarlanabilir.")
         self.metin.pack(padx=10, pady=10)
 
         self.th1_slider = tk.Scale(self, from_=0, to=255, orient=tk.HORIZONTAL, length=200)
@@ -102,7 +102,7 @@ class Odev2Arayuz(tk.Toplevel):
         self.gorselYukleBtn = tk.Button(self, text="Görsel Yükle", command=self.gorselYukle)
         self.gorselYukleBtn.pack(padx=10, pady=20)
 
-        self.gbbBtn = tk.Button(self, text="Görüntü Boyutu Büyütme (x1.1)", command=self.bilinear_interpolation)
+        self.gbbBtn = tk.Button(self, text="Görüntü Boyutu Büyütme (x1.1)", command=self.boyutBuyutme)
         self.gbbBtn.pack(pady=5)
 
         self.gbkBtn = tk.Button(self, text="Görüntü Boyutu Küçültme")
@@ -110,7 +110,7 @@ class Odev2Arayuz(tk.Toplevel):
 
         self.dondurmeTxt = tk.Label(self, text="Döndürme Açısı")
         self.dondurmeTxt.pack(pady=(30, 0))
-        self.dondurme_slider = tk.Scale(self, from_=0, to=360, orient=tk.HORIZONTAL, length=200)
+        self.dondurme_slider = tk.Scale(self, from_=1, to=359, orient=tk.HORIZONTAL, length=200)
         self.dondurme_slider.set(0)
         self.dondurme_slider.pack()
         self.dondurmeBtn = tk.Button(self, text="Açıya Göre Görüntü Döndürme")
@@ -139,7 +139,8 @@ class Odev2Arayuz(tk.Toplevel):
             self.gorselKatmani.config(image=img)
             self.gorselKatmani.image = img
 
-    def bilinear_interpolation(self):
+    def boyutBuyutme(self):
+        # Bilinear İnterpolasyon
         if self.image is not None:
             # Matris işlemlerinin kolayca yapılabilmesi için görsel PIL türünden NumPy Array türüne çevrildi
             arraySrc = np.array(self.image)

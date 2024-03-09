@@ -148,7 +148,7 @@ class Odev2Arayuz(tk.Toplevel):
             # Kaynak görüntünün boyutları
             src_height, src_width = arraySrc.shape[:2]
 
-            # En-Boy 200'er piksel arttırıldı
+            # En-Boy 1.1 oranında artırıldı
             new_width = int(src_width + (src_width * 1.1))
             new_height = int(src_height + (src_height * 1.1))
 

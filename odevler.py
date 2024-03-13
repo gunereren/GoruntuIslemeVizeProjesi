@@ -285,7 +285,8 @@ class AnaSayfa:
             # Yeni ödevler geldikçe buraya eklenecek.
             # Ödevler sözlük halinde tutuluyor ilk kısım menüde yazan, 2. kısım pencere ismi
             "Ödev 1": "Temel İşlevselliği Oluştur",
-            "Ödev 2": "Temel Görüntü Operasyonları ve İnterpolasyon"
+            "Ödev 2": "Temel Görüntü Operasyonları ve İnterpolasyon",
+            "Ödev 3": "NONE"
         }
 
         self.odevMenu = tk.Menu(self.root, tearoff=0)

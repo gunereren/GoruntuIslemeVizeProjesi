@@ -117,7 +117,7 @@ class Odev2Arayuz(tk.Toplevel):
         self.dondurmeBtn = tk.Button(self, text="Açıya Göre Görüntü Döndürme", command=self.goruntuDondur)
         self.dondurmeBtn.pack(pady=(0, 5))
 
-        self.zoominBtn = tk.Button(self, text="Zoom-In", command=self.zoomIn)
+        self.zoominBtn = tk.Button(self, text="Zoom-In (+0.1x)", command=self.zoomIn)
         self.zoominBtn.pack()
 
         self.zoomOutBtn = tk.Button(self, text="Zoom-Out")

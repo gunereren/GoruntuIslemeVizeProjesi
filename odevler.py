@@ -296,7 +296,7 @@ class Odev2Arayuz(tk.Toplevel):
             x_ratio = float(kWidth - 1) / (width - 1)
             y_ratio = float(kHeight - 1) / (height - 1)
 
-            new_img = np.zeros((height, width, arraySrc.shape[2]), dtype=np.uint8)
+            new_img = np.zeros((height, width, kesitArray.shape[2]), dtype=np.uint8)
 
             for i in range(height):
                 for j in range(width):
@@ -312,10 +312,10 @@ class Odev2Arayuz(tk.Toplevel):
                     y_diff = (y_ratio * i) - y
 
                     # Bilinear interpolasyon formülü
-                    pixel_value = (1 - x_diff) * (1 - y_diff) * arraySrc[y, x] + \
-                                  x_diff * (1 - y_diff) * arraySrc[y, x + 1] + \
-                                  (1 - x_diff) * y_diff * arraySrc[y + 1, x] + \
-                                  x_diff * y_diff * arraySrc[y + 1, x + 1]
+                    pixel_value = (1 - x_diff) * (1 - y_diff) * kesitArray[y, x] + \
+                                  x_diff * (1 - y_diff) * kesitArray[y, x + 1] + \
+                                  (1 - x_diff) * y_diff * kesitArray[y + 1, x] + \
+                                  x_diff * y_diff * kesitArray[y + 1, x + 1]
 
                     new_img[i, j] = pixel_value.astype(np.uint8)
 

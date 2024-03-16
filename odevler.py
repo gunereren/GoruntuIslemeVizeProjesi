@@ -316,10 +316,10 @@ class Odev2Arayuz(tk.Toplevel):
                     zoomedImgArray[i, j] = pixel_value.astype(np.uint8)
 
             # Oluşan son matrisi arayüzde görüntüleyebilmek için tekrar PIL türüne çeviriyoruz
-            self.zoomedImg = Image.fromarray(zoomedImgArray)
+            self.image = Image.fromarray(zoomedImgArray)
 
             # Yeni görüntü için PhotoImage nesnesi oluşturuldu
-            img_tk = ImageTk.PhotoImage(self.image)
+            zoomedImg_tk = ImageTk.PhotoImage(self.image)
 
             self.gorselKatmani.config(image=zoomedImg_tk)
             self.gorselKatmani.image = zoomedImg_tk

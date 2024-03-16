@@ -283,7 +283,7 @@ class Odev2Arayuz(tk.Toplevel):
             kWidth = int(width - (width * 0.1))
             kHeight = int(height - (height * 0.1))
 
-            kesitArray = np.zeros((kHeight, kWidth, srcCopy.shape[2]), dtype=np.uint8)
+            kesitArray = np.zeros((kHeight + 1, kWidth + 1, srcCopy.shape[2]), dtype=np.uint8)
 
             x = 0
             for i in range(0 + int(width * 0.1)//2, width - int(width * 0.1)//2):
@@ -328,7 +328,6 @@ class Odev2Arayuz(tk.Toplevel):
 
             self.gorselKatmani.config(image=img_tk)
             self.gorselKatmani.image = img_tk
-
 
 
 class AnaSayfa:

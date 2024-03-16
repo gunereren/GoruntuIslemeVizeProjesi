@@ -1,5 +1,4 @@
 import math
-
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import tkinter as tk
@@ -270,9 +269,6 @@ class Odev2Arayuz(tk.Toplevel):
     def zoomIn(self):
         if self.image is not None:
             arraySrc = np.array(self.image)
-
-            # Ana görselin kopyasını alıp işlemleri kopya üzerinde uygulayacağız çünkü zoom in işleminden sonra zoom out
-            # işlemi yapmamız mümkün olsun.
             srcCopy = arraySrc.copy()
 
             # Kaynak görüntü boyutları alındı
@@ -296,7 +292,7 @@ class Odev2Arayuz(tk.Toplevel):
             x_ratio = float(kWidth - 1) / (width - 1)
             y_ratio = float(kHeight - 1) / (height - 1)
 
-            new_img = np.zeros((height, width, kesitArray.shape[2]), dtype=np.uint8)
+            zoomedImgArray = np.zeros((height, width, kesitArray.shape[2]), dtype=np.uint8)
 
             for i in range(height):
                 for j in range(width):
@@ -317,17 +313,16 @@ class Odev2Arayuz(tk.Toplevel):
                                   (1 - x_diff) * y_diff * kesitArray[y + 1, x] + \
                                   x_diff * y_diff * kesitArray[y + 1, x + 1]
 
-                    new_img[i, j] = pixel_value.astype(np.uint8)
+                    zoomedImgArray[i, j] = pixel_value.astype(np.uint8)
 
-            # Oluşan son matrisi bir değişkene atıp arayüzde görüntüleyebilmek için tekrar PIL türüne çeviriyoruz
-            arrayImg = new_img
-            self.image = Image.fromarray(arrayImg)
+            # Oluşan son matrisi arayüzde görüntüleyebilmek için tekrar PIL türüne çeviriyoruz
+            self.zoomedImg = Image.fromarray(zoomedImgArray)
 
             # Yeni görüntü için PhotoImage nesnesi oluşturuldu
             img_tk = ImageTk.PhotoImage(self.image)
 
-            self.gorselKatmani.config(image=img_tk)
-            self.gorselKatmani.image = img_tk
+            self.gorselKatmani.config(image=zoomedImg_tk)
+            self.gorselKatmani.image = zoomedImg_tk
 
 
 class AnaSayfa:

@@ -145,48 +145,36 @@ class Odev2Arayuz(tk.Toplevel):
         if self.image is not None:
             # Matris işlemlerinin kolayca yapılabilmesi için görsel PIL türünden NumPy Array türüne çevrildi
             arraySrc = np.array(self.image)
-
             # Kaynak görüntünün boyutları
             src_height, src_width = arraySrc.shape[:2]
-
             # En-Boy 1.1 oranında artırıldı
             new_width = int(src_width * 1.1)
             new_height = int(src_height * 1.1)
-
             x_ratio = float(src_width - 1) / (new_width - 1)
             y_ratio = float(src_height - 1) / (new_height - 1)
-
             # İstenen boyutta sıfırlardan oluşan yeni bir NumPy array oluşturduk
             new_img = np.zeros((new_height, new_width, arraySrc.shape[2]), dtype=np.uint8)
-
             for i in range(new_height):
                 for j in range(new_width):
                     x = int(x_ratio * j)
                     y = int(y_ratio * i)
-
                     if x >= src_width - 1:
                         x = src_width - 2
                     if y >= src_height - 1:
                         y = src_height - 2
-
                     x_diff = (x_ratio * j) - x
                     y_diff = (y_ratio * i) - y
-
                     # Bilinear interpolasyon formülü
                     pixel_value = (1 - x_diff) * (1 - y_diff) * arraySrc[y, x] + \
                                   x_diff * (1 - y_diff) * arraySrc[y, x + 1] + \
                                   (1 - x_diff) * y_diff * arraySrc[y + 1, x] + \
                                   x_diff * y_diff * arraySrc[y + 1, x + 1]
-
                     new_img[i, j] = pixel_value.astype(np.uint8)
-
             # Oluşan son matrisi bir değişkene atıp arayüzde görüntüleyebilmek için tekrar PIL türüne çeviriyoruz
             arrayImg = new_img
             self.image = Image.fromarray(arrayImg)
-
             # Yeni görüntü için PhotoImage nesnesi oluşturuldu
             img_tk = ImageTk.PhotoImage(self.image)
-
             self.gorselKatmani.config(image=img_tk)
             self.gorselKatmani.image = img_tk
             
@@ -195,31 +183,23 @@ class Odev2Arayuz(tk.Toplevel):
         if self.image is not None:
             arraySrc = np.array(self.image)
             src_height, src_width = arraySrc.shape[:2]
-
             new_width = int(src_width * 0.9)
             new_height = int(src_height * 0.9)
-
             width_ratio = src_width / new_width
             height_ratio = src_height / new_height
-
             newImgArray = np.zeros((new_height, new_width, 3), dtype=np.uint8)
-
             # En yakın komşu interpolasyonu
             for y in range(new_height):
                 for x in range(new_width):
                     # Orjinal piksel koordinatlarını hesapla
                     original_x = int(x * width_ratio)
                     original_y = int(y * height_ratio)
-
                     # Orjinal piksel değerini al ve yeni görüntüye ekle
                     newImgArray[y, x, :] = arraySrc[original_y, original_x, :]
-
             arrayImg = newImgArray
             self.image = Image.fromarray(arrayImg)
-
             # Yeni görüntü için PhotoImage nesnesi oluşturuldu
             img_tk = ImageTk.PhotoImage(self.image)
-
             self.gorselKatmani.config(image=img_tk)
             self.gorselKatmani.image = img_tk
 
@@ -270,17 +250,13 @@ class Odev2Arayuz(tk.Toplevel):
         if self.image is not None:
             arraySrc = np.array(self.image)
             srcCopy = arraySrc.copy()
-
             # Kaynak görüntü boyutları alındı
             height, width = srcCopy.shape[:2]
-
             # Görselin ortasından 0.1 oranında bir kesit alıyoruz. Daha sonra bu kesiti boyut büyütme işlemi ile
             # eski görselin yerine koyacağız
             kWidth = int(width - (width * 0.1))
             kHeight = int(height - (height * 0.1))
-
             kesitArray = np.zeros((kHeight + 1, kWidth + 1, srcCopy.shape[2]), dtype=np.uint8)
-
             x = 0
             for i in range(0 + int(width * 0.1)//2, width - int(width * 0.1)//2):
                 y = 0
@@ -288,39 +264,29 @@ class Odev2Arayuz(tk.Toplevel):
                     kesitArray[x, y] = srcCopy[i, j]
                     y += 1
                 x += 1
-
             x_ratio = float(kWidth - 1) / (width - 1)
             y_ratio = float(kHeight - 1) / (height - 1)
-
             zoomedImgArray = np.zeros((height, width, kesitArray.shape[2]), dtype=np.uint8)
-
             for i in range(height):
                 for j in range(width):
                     x = int(x_ratio * j)
                     y = int(y_ratio * i)
-
                     if x >= kWidth - 1:
                         x = kWidth - 2
                     if y >= kHeight - 1:
                         y = kHeight - 2
-
                     x_diff = (x_ratio * j) - x
                     y_diff = (y_ratio * i) - y
-
                     # Bilinear interpolasyon formülü
                     pixel_value = (1 - x_diff) * (1 - y_diff) * kesitArray[y, x] + \
                                   x_diff * (1 - y_diff) * kesitArray[y, x + 1] + \
                                   (1 - x_diff) * y_diff * kesitArray[y + 1, x] + \
                                   x_diff * y_diff * kesitArray[y + 1, x + 1]
-
                     zoomedImgArray[i, j] = pixel_value.astype(np.uint8)
-
             # Oluşan son matrisi arayüzde görüntüleyebilmek için tekrar PIL türüne çeviriyoruz
             self.image = Image.fromarray(zoomedImgArray)
-
             # Yeni görüntü için PhotoImage nesnesi oluşturuldu
             zoomedImg_tk = ImageTk.PhotoImage(self.image)
-
             self.gorselKatmani.config(image=zoomedImg_tk)
             self.gorselKatmani.image = zoomedImg_tk
 

@@ -8,6 +8,7 @@ from ctypes import windll
 from tkinter import messagebox
 import numpy as np
 import cv2
+from numpy.distutils.system_info import blas_src_info
 
 # Bu kod Tkinter penceresinin görüntü kalitesini arttırmaya yarıyor. Yazılar daha net gözüküyor.
 windll.shcore.SetProcessDpiAwareness(1)
@@ -291,6 +292,60 @@ class Odev2Arayuz(tk.Toplevel):
             self.gorselKatmani.image = zoomedImg_tk
 
 
+class Odev3Arayuz(tk.Toplevel):
+    # Ödev 3 ile ilgili işlemlerin yapıldığı class
+    def __init__(self, ust_dugme_text, odev_icerik):
+        super().__init__()
+        self.title(ust_dugme_text + ": " + odev_icerik)
+        self.geometry("700x700")
+
+        self.gorselKatmani = tk.Label(self)
+        self.gorselKatmani.pack()
+
+        self.gorselYukleBtn = tk.Button(self, text="Görsel Yükle", command=self.gorselYukle)
+        self.gorselYukleBtn.pack(padx=10, pady=20)
+
+        self.cizgiTespitiBtn = tk.Button(self, text="Cizgi Tespiti", command=self.cizgiTespiti)
+        self.cizgiTespitiBtn.pack(pady=5)
+
+        self.image = None
+
+    def cizgiTespiti(self):
+        if self.image is not None:
+            arraySrc = np.array(self.image)
+            srcCopy = arraySrc.copy()
+            # gray = cv2.cvtColor(srcCopy, cv2.COLOR_BGR2GRAY)
+            # edges = cv2.Canny(gray, 75, 250)
+            hsv = cv2.cvtColor(srcCopy, cv2.COLOR_BGR2HSV)
+            blurred = cv2.GaussianBlur(hsv, (5, 5), 0)
+            edges = cv2.Canny(blurred, 75, 250)
+            lines = cv2.HoughLinesP(edges, 1, np.pi/180, 50, minLineLength=50, maxLineGap=2)
+            # PARAMETRELER: 1.Kaynak Görüntü, 2.Polar koordinat sistemindeki p değerini belirler(Büyük küçük çizgilerin algılanması için)
+            #               3. theta değeri -> çizginin açısını ifade eder, 4. threshold eşik değeri
+
+            if lines is not None:
+                for line in lines:
+                    x1, y1, x2, y2 = line[0]
+                    cv2.line(srcCopy, (x1, y1), (x2, y2), (0, 255, 0), 5)
+
+            self.image = Image.fromarray(srcCopy)
+            lastImg = ImageTk.PhotoImage(self.image)
+            self.gorselKatmani.config(image=lastImg)
+            self.gorselKatmani.image = lastImg
+
+    def gorselYukle(self):
+        file_path = filedialog.askopenfilename(filetypes=[("Resim Dosyaları (JPG/JPEG)", "*.jpg;*.jpeg;")])
+        if file_path:
+            self.image = Image.open(file_path)
+            self.display_image()
+
+    def display_image(self):
+        if self.image is not None:
+            img = ImageTk.PhotoImage(self.image)
+            self.gorselKatmani.config(image=img)
+            self.gorselKatmani.image = img
+
+
 class AnaSayfa:
     # Uygulama ana ekranı oluşturmamızı ve kontrol etmemizi sağlayan class
     def __init__(self, root):
@@ -309,7 +364,7 @@ class AnaSayfa:
             # Ödevler sözlük halinde tutuluyor ilk kısım menüde yazan, 2. kısım pencere ismi
             "Ödev 1": "Temel İşlevselliği Oluştur",
             "Ödev 2": "Temel Görüntü Operasyonları ve İnterpolasyon",
-            "Ödev 3": "NONE"
+            "Ödev 3": "Vize Ödevi"
         }
 
         self.odevMenu = tk.Menu(self.root, tearoff=0)
@@ -324,6 +379,8 @@ class AnaSayfa:
             Odev1Arayuz(odev, icerik)
         elif odev == "Ödev 2":
             Odev2Arayuz(odev, icerik)
+        elif odev == "Ödev 3":
+            Odev3Arayuz(odev, icerik)
         else:
             messagebox.showinfo("Uyarı", "Bu ödev henüz verilmedi :)")
 

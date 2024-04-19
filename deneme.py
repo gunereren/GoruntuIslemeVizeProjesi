@@ -1,63 +1,17 @@
-import tkinter as tk
-from tkinter import messagebox
+import cv2
 
-class Odev1Arayuzu(tk.Toplevel):
-    def __init__(self, ust_dugme_text, odev_icerik):
-        super().__init__()
+image = cv2.imread("C:\\Users\\Eren\\Pictures\\Saved Pictures\\3.jpg")
 
-        self.title(ust_dugme_text)
+if image is not None:
+    cv2.imshow("Image", image)
 
-        self.odev_icerik = odev_icerik
+    gaussianBlur = cv2.GaussianBlur(image, (5, 5), 0)
+    cv2.imshow("Gaussian Blur", gaussianBlur)
 
-        self.label = tk.Label(self, text=self.odev_icerik)
-        self.label.pack(padx=10, pady=10)
 
-        self.geri_don_button = tk.Button(self, text="Geri Dön", command=self.destroy)
-        self.geri_don_button.pack(pady=10)
-
-class Odev2Arayuzu(tk.Toplevel):
-    def __init__(self, ust_dugme_text, odev_icerik):
-        super().__init__()
-
-        self.title(ust_dugme_text)
-
-        # Odev2'nin özel işlevselliği burada eklenebilir
-
-        self.label = tk.Label(self, text=odev_icerik)
-        self.label.pack(padx=10, pady=10)
-
-        self.geri_don_button = tk.Button(self, text="Geri Dön", command=self.destroy)
-        self.geri_don_button.pack(pady=10)
-
-class OdevTakipArayuzu:
-    def __init__(self, root):
-        self.root = root
-        self.root.title("Ödev Takip")
-
-        self.odevler = {
-            "Ödev 1": "Ödev 1 İçeriği",
-            "Ödev 2": "Ödev 2 İçeriği",
-            # Buraya ek ödevleri ekleyebilirsiniz.
-        }
-
-        self.odev_menu = tk.Menu(self.root, tearoff=0)
-        self.root.config(menu=self.odev_menu)
-
-        for odev in self.odevler:
-            self.odev_menu.add_command(label=odev, command=lambda o=odev: self.odev_ac(o))
-
-    def odev_ac(self, odev):
-        icerik = self.odevler.get(odev, "Ödev içeriği bulunamadı.")
-
-        if odev == "Ödev 1":
-            Odev1Arayuzu(odev, icerik)
-        elif odev == "Ödev 2":
-            Odev2Arayuzu(odev, icerik)
-        # Buraya ek ödevler için sınıfları ekleyebilirsiniz.
-        else:
-            messagebox.showinfo("Uyarı", "Bu ödev için özel sınıf bulunamadı.")
-
-# Ana uygulama penceresi
-root = tk.Tk()
-uygulama = OdevTakipArayuzu(root)
-root.mainloop()
+    gray = cv2.cvtColor(gaussianBlur, cv2.COLOR_BGR2GRAY)
+    cv2.imshow("Gray", gray)
+    hsv = cv2.cvtColor(gaussianBlur, cv2.COLOR_BGR2HSV)
+    cv2.imshow("HSV", hsv)
+    if cv2.waitKey(0) == ord("q"):
+        cv2.destroyAllWindows()

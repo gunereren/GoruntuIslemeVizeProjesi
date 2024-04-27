@@ -308,6 +308,9 @@ class Odev3Arayuz(tk.Toplevel):
         self.cizgiTespitiBtn = tk.Button(self, text="Cizgi Tespiti", command=self.cizgiTespiti)
         self.cizgiTespitiBtn.pack(pady=5)
 
+        self.gozAlgilaBtn = tk.Button(self, text="Göz Algıla", command=self.gozAlgila)
+        self.gozAlgilaBtn.pack(pady=5)
+
         self.image = None
 
     def cizgiTespiti(self):
@@ -327,6 +330,25 @@ class Odev3Arayuz(tk.Toplevel):
                 for line in lines:
                     x1, y1, x2, y2 = line[0]
                     cv2.line(srcCopy, (x1, y1), (x2, y2), (0, 255, 0), 5)
+
+            self.image = Image.fromarray(srcCopy)
+            lastImg = ImageTk.PhotoImage(self.image)
+            self.gorselKatmani.config(image=lastImg)
+            self.gorselKatmani.image = lastImg
+
+    def gozAlgila(self):
+        if self.image is not None:
+            arraySrc = np.array(self.image)
+            srcCopy = arraySrc.copy()
+            gray = cv2.cvtColor(srcCopy, cv2.COLOR_BGR2GRAY)
+            edges = cv2.Canny(gray, 80, 160)
+            edges = cv2.GaussianBlur(edges, (3, 3), 0)
+            circles = cv2.HoughCircles(edges, cv2.HOUGH_GRADIENT, 1, 50, param1=30, param2=48, minRadius=0,
+                                       maxRadius=50)
+            if circles is not None:
+                circles = np.round(circles[0, :]).astype("int")
+                for (x, y, r) in circles:
+                    cv2.circle(srcCopy, (x, y), r, (0, 255, 0), 4)
 
             self.image = Image.fromarray(srcCopy)
             lastImg = ImageTk.PhotoImage(self.image)

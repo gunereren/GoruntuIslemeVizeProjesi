@@ -318,6 +318,16 @@ class Odev3Arayuz(tk.Toplevel):
         self.koyuYesilAlgilaBtn = tk.Button(self, text="Koyu Yeşil Algıla", command=self.koyuYesilAlgila)
         self.koyuYesilAlgilaBtn.pack(pady=5)
 
+        self.sigmoidContrastBtn = tk.Button(self, text="Sigmoid Contrast", command=self.sigmoidContrast)
+        self.sigmoidContrastBtn.pack(pady=5)
+
+        self.shiftedSigmoidContrastBtn = tk.Button(self, text="Shifted Sigmoid Contrast", command=self.shiftedSigmoidContrast)
+        self.shiftedSigmoidContrastBtn.pack(pady=5)
+
+        self.strechSteepSigmoidBtn = tk.Button(self, text="Strech Steep Sigmoid", command=self.strechSteepSigmoid)
+        self.strechSteepSigmoidBtn.pack(pady=5)
+
+
         self.image = None
 
     def cizgiTespiti(self):
@@ -423,6 +433,64 @@ class Odev3Arayuz(tk.Toplevel):
             self.gorselKatmani.config(image=lastImg)
             self.gorselKatmani.image = lastImg
 
+    def sigmoidContrast(self):
+        if self.image is not None:
+            arraySrc = np.array(self.image)
+            srcCopy = arraySrc.copy()
+            alpha = 1
+            a = 0.3
+            b = 0.7
+            for i in range(srcCopy.shape[0]):
+                for j in range(srcCopy.shape[1]):
+                    pixel_val = srcCopy[i, j] / 255.0
+                    transformed_pixel = 255.0 * (1 / (1 + np.exp(-alpha * (pixel_val - a) / (b - a))))
+                    srcCopy[i, j] = transformed_pixel
+            self.image = Image.fromarray(srcCopy)
+            lastImg = ImageTk.PhotoImage(self.image)
+            self.gorselKatmani.config(image=lastImg)
+            self.gorselKatmani.image = lastImg
+
+    def shiftedSigmoidContrast(self):
+        if self.image is not None:
+            arraySrc = np.array(self.image)
+            srcCopy = arraySrc.copy()
+            alpha = 1
+            a = 0.3
+            b = 0.7
+            c = 1.5
+            for i in range(srcCopy.shape[0]):
+                for j in range(srcCopy.shape[1]):
+                    pixel_val = srcCopy[i, j] / 255.0
+                    transformed_pixel = 255.0 * (1 / (1 + np.exp(-alpha * (pixel_val - a) / (b - a))))
+                    transformed_pixel = c * (transformed_pixel - 127) + 127
+                    srcCopy[i, j] = transformed_pixel
+            self.image = Image.fromarray(srcCopy)
+            lastImg = ImageTk.PhotoImage(self.image)
+            self.gorselKatmani.config(image=lastImg)
+            self.gorselKatmani.image = lastImg
+
+    def strechSteepSigmoid(self):
+        if self.image is not None:
+            arraySrc = np.array(self.image)
+            srcCopy = arraySrc.copy()
+            rows, cols = srcCopy.shape
+            alpha = 1
+            a = 0.3
+            b = 0.7
+            slope = 10.0
+            output_img = np.zeros_like(srcCopy, dtype=np.float64)
+
+            for i in range(rows):
+                for j in range(cols):
+                    pixel_val = srcCopy[i, j] / 255.0
+                    transformed_pixel = 255.0 * (1 / (1 + np.exp(-alpha * slope * (pixel_val - a) / (b - a))))
+                    output_img[i, j] = transformed_pixel
+
+            output_img = output_img.astype(np.uint8)
+            self.image = Image.fromarray(output_img)
+            lastImg = ImageTk.PhotoImage(self.image)
+            self.gorselKatmani.config(image=lastImg)
+            self.gorselKatmani.image = lastImg
 
     def gorselYukle(self):
         file_path = filedialog.askopenfilename(filetypes=[("Resim Dosyaları (JPG/JPEG)", "*.jpg;*.jpeg;")])

@@ -1,5 +1,6 @@
 import math
 import matplotlib.pyplot as plt
+import pandas as pd
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import tkinter as tk
 from tkinter import filedialog
@@ -302,6 +303,9 @@ class Odev3Arayuz(tk.Toplevel):
         self.gorselKatmani = tk.Label(self)
         self.gorselKatmani.pack()
 
+        self.textLabel = tk.Label(self, text="")
+        self.textLabel.pack(pady=5)
+
         self.gorselYukleBtn = tk.Button(self, text="Görsel Yükle", command=self.gorselYukle)
         self.gorselYukleBtn.pack(padx=10, pady=20)
 
@@ -310,6 +314,9 @@ class Odev3Arayuz(tk.Toplevel):
 
         self.gozAlgilaBtn = tk.Button(self, text="Göz Algıla", command=self.gozAlgila)
         self.gozAlgilaBtn.pack(pady=5)
+
+        self.koyuYesilAlgilaBtn = tk.Button(self, text="Koyu Yeşil Algıla", command=self.koyuYesilAlgila)
+        self.koyuYesilAlgilaBtn.pack(pady=5)
 
         self.image = None
 
@@ -354,6 +361,68 @@ class Odev3Arayuz(tk.Toplevel):
             lastImg = ImageTk.PhotoImage(self.image)
             self.gorselKatmani.config(image=lastImg)
             self.gorselKatmani.image = lastImg
+
+    def koyuYesilAlgila(self):
+        if self.image is not None:
+            srcArray = np.array(self.image)
+            img = srcArray.copy()
+            contoured_img = srcArray.copy()
+
+            hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
+            gray_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+            lowerGreen = np.array([50, 138, 90])
+            upperGreen = np.array([80, 255, 180])
+
+            mask = cv2.inRange(hsv, lowerGreen, upperGreen)
+
+            blur = cv2.GaussianBlur(mask, (5, 5), 0)
+
+            threshold = cv2.threshold(blur, 127, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
+
+            eroded = cv2.erode(threshold, None, iterations=1)
+            dilated = cv2.dilate(eroded, None, iterations=1)
+
+            contours, _ = cv2.findContours(dilated, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
+
+            contoured_img = cv2.drawContours(contoured_img, contours, -1, (0, 0, 255), 2)
+
+            contour_data = []
+
+            for contour in contours:
+                area = cv2.contourArea(contour)
+                cx, cy, cWidth, cHeight = cv2.boundingRect(contour)
+                center = f"{cx}, {cy}"
+                width = f"{cWidth} px"
+                length = f"{len(contour)} px"
+                diagonal = f"{int(np.sqrt(cWidth ** 2 + cHeight ** 2))} px"
+                energy = 0
+                for point in contour:
+                    i, j = point[0]
+                    pixel_value = gray_img[j, i] ** 2
+                    energy += pixel_value
+
+                c_info = {
+                    "Center": center,
+                    "Length": length,
+                    "Width": width,
+                    "Diagonal": diagonal,
+                    "Energy": energy,
+                }
+
+                contour_data.append(c_info)
+
+            df = pd.DataFrame(contour_data)
+            excelFile = "contours.xlsx"
+            df.to_excel(excelFile, index=True)
+            self.textLabel.config(text=f"Algılanan yeşil bölge sayısı: {len(contours)}")
+
+            self.image = Image.fromarray(contoured_img)
+            lastImg = ImageTk.PhotoImage(self.image)
+            
+            self.gorselKatmani.config(image=lastImg)
+            self.gorselKatmani.image = lastImg
+
 
     def gorselYukle(self):
         file_path = filedialog.askopenfilename(filetypes=[("Resim Dosyaları (JPG/JPEG)", "*.jpg;*.jpeg;")])

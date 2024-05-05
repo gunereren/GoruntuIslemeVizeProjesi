@@ -334,10 +334,8 @@ class Odev3Arayuz(tk.Toplevel):
         if self.image is not None:
             arraySrc = np.array(self.image)
             srcCopy = arraySrc.copy()
-            # gray = cv2.cvtColor(srcCopy, cv2.COLOR_BGR2GRAY)
-            # edges = cv2.Canny(gray, 75, 250)
-            hsv = cv2.cvtColor(srcCopy, cv2.COLOR_BGR2HSV)
-            blurred = cv2.GaussianBlur(hsv, (5, 5), 0)
+            gray = cv2.cvtColor(srcCopy, cv2.COLOR_BGR2GRAY)
+            blurred = cv2.GaussianBlur(gray, (3 , 3), 0)
             edges = cv2.Canny(blurred, 75, 250)
             lines = cv2.HoughLinesP(edges, 1, np.pi/180, 50, minLineLength=50, maxLineGap=2)
             # PARAMETRELER: 1.Kaynak Görüntü, 2.Polar koordinat sistemindeki p değerini belirler(Büyük küçük çizgilerin algılanması için)
@@ -346,7 +344,7 @@ class Odev3Arayuz(tk.Toplevel):
             if lines is not None:
                 for line in lines:
                     x1, y1, x2, y2 = line[0]
-                    cv2.line(srcCopy, (x1, y1), (x2, y2), (0, 255, 0), 5)
+                    cv2.line(srcCopy, (x1, y1), (x2, y2), (0, 255, 0), 2)
 
             self.image = Image.fromarray(srcCopy)
             lastImg = ImageTk.PhotoImage(self.image)
@@ -377,28 +375,18 @@ class Odev3Arayuz(tk.Toplevel):
             srcArray = np.array(self.image)
             img = srcArray.copy()
             contoured_img = srcArray.copy()
-
             hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
             gray_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-
             lowerGreen = np.array([50, 138, 90])
             upperGreen = np.array([80, 255, 180])
-
             mask = cv2.inRange(hsv, lowerGreen, upperGreen)
-
             blur = cv2.GaussianBlur(mask, (5, 5), 0)
-
             threshold = cv2.threshold(blur, 127, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
-
             eroded = cv2.erode(threshold, None, iterations=1)
             dilated = cv2.dilate(eroded, None, iterations=1)
-
             contours, _ = cv2.findContours(dilated, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
-
             contoured_img = cv2.drawContours(contoured_img, contours, -1, (0, 0, 255), 2)
-
             contour_data = []
-
             for contour in contours:
                 area = cv2.contourArea(contour)
                 cx, cy, cWidth, cHeight = cv2.boundingRect(contour)
@@ -411,7 +399,6 @@ class Odev3Arayuz(tk.Toplevel):
                     i, j = point[0]
                     pixel_value = gray_img[j, i] ** 2
                     energy += pixel_value
-
                 c_info = {
                     "Center": center,
                     "Length": length,
@@ -419,17 +406,13 @@ class Odev3Arayuz(tk.Toplevel):
                     "Diagonal": diagonal,
                     "Energy": energy,
                 }
-
                 contour_data.append(c_info)
-
             df = pd.DataFrame(contour_data)
             excelFile = "contours.xlsx"
             df.to_excel(excelFile, index=True)
             self.textLabel.config(text=f"Algılanan yeşil bölge sayısı: {len(contours)}")
-
             self.image = Image.fromarray(contoured_img)
             lastImg = ImageTk.PhotoImage(self.image)
-            
             self.gorselKatmani.config(image=lastImg)
             self.gorselKatmani.image = lastImg
 
